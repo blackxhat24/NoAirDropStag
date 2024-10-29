@@ -1,0 +1,38 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --vh: 1vh;
+}
+
+html, body {
+  height: 100%;
+  overflow: hidden;
+}
+
+.earning-animation {
+  position: absolute;
+  color: #10B981;
+  font-weight: bold;
+  animation: float-up 1s ease-out forwards;
+  pointer-events: none;
+}
+
+@keyframes float-up {
+  0% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-100px);
+  }
+}
+
+/* Fix for mobile browsers */
+@supports (-webkit-touch-callout: none) {
+  .h-screen {
+    height: calc(var(--vh, 1vh) * 100);
+  }
+}
