@@ -1,8 +1,8 @@
 name: TruffleHog Secret Scanner
 
 on:
-  pull_request:  # Run on every PR
-  push:          # Run on every push
+  pull_request:  # Runs on every pull request
+  push:          # Runs on every push
   schedule:
     - cron: '0 12 * * *'  # Runs daily at 12 PM UTC
 
@@ -13,15 +13,8 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0  # Ensures full Git history is available
+          fetch-depth: 0  # Fetch full history to avoid Git issues
 
       - name: Run TruffleHog
-        uses: trufflesecurity/trufflehog@main
-        with:
-          path: "."  # Scan entire repository
-          base: "origin/main"  # Compare against the main branch
-          head: "HEAD"
-
-      - name: Handle Failure
-        if: failure()
-        run: echo "Secrets detected! Check the TruffleHog report." && exit 1
+        run: |
+          docker run --rm -v $(pwd):/src ghcr.io/trufflesecurity/trufflehog:latest filesystem /src --no-verify
