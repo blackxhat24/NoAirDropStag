@@ -19,6 +19,9 @@ jobs:
         uses: trufflesecurity/trufflehog@main
         with:
           path: "."  # Scan entire repository
+          
+      - name: Run Gitleaks
+        uses: gitleaks/gitleaks-action@v2
 
       - name: Handle Failure
         if: failure()
