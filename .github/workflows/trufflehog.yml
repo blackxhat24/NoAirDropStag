@@ -1,7 +1,7 @@
 name: TruffleHog Secret Scanner
 
 on:
-  pull_request:  # Runs on every pull request
+  pull_request:  # Runs on pull requests
   push:          # Runs on every push
   schedule:
     - cron: '0 12 * * *'  # Runs daily at 12 PM UTC
@@ -13,8 +13,9 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0  # Fetch full history to avoid Git issues
+          fetch-depth: 2  # Ensures previous commit is available for comparison
 
       - name: Run TruffleHog
-        run: |
-          docker run --rm -v $(pwd):/src ghcr.io/trufflesecurity/trufflehog:latest filesystem /src --no-verify
+        uses: trufflesecurity/trufflehog@main
+        with:
+          scanArguments: "--regex --entropy=True"  # Uses regex scanning + entropy analysis
