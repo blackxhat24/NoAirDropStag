@@ -17,7 +17,7 @@ jobs:
 
       - name: Run TruffleHog on Filesystem
         run: |
-          docker run --rm -v $(pwd):/src ghcr.io/trufflesecurity/trufflehog:latest filesystem /src --json --only-verified=false
+          docker run --rm -v "$(pwd)":/src ghcr.io/trufflesecurity/trufflehog:latest filesystem /src --json --only-verified=false --debug
 
       - name: Run Gitleaks
         uses: gitleaks/gitleaks-action@v2
