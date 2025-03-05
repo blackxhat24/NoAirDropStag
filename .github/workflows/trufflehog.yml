@@ -1,7 +1,7 @@
 name: TruffleHog Secret Scanner
 
 on:
-  pull_request:  # Runs on pull requests
+  pull_request:  # Runs on PRs
   push:          # Runs on every push
   schedule:
     - cron: '0 12 * * *'  # Runs daily at 12 PM UTC
@@ -13,9 +13,13 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v4
         with:
-          fetch-depth: 2  # Ensures previous commit is available for comparison
+          fetch-depth: 0  # Fetch full history to fix merge base issues
 
       - name: Run TruffleHog
         uses: trufflesecurity/trufflehog@main
         with:
-          scanArguments: "--regex --entropy=True"  # Uses regex scanning + entropy analysis
+          path: "."  # Scan entire repository
+
+      - name: Handle Failure
+        if: failure()
+        run: echo "Secrets detected! Check the TruffleHog report." && exit 1
