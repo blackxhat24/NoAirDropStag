@@ -1,0 +1,21 @@
+name: TruffleHog Secret Scanner
+
+on:
+  pull_request:  
+  push:          
+  schedule:
+    - cron: '0 12 * * *'  
+
+jobs:
+  trufflehog-scan:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Run TruffleHog
+        uses: trufflesecurity/trufflehog@main
+        with:
+          path: "." 
+          base: "origin/main" 
+          head: "HEAD"
