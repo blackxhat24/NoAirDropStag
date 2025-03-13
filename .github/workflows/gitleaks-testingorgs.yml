@@ -1,0 +1,42 @@
+# File path: action-hub/.github/workflows/gitleaks-gdplabs.yml
+name: Gitleaks Scanner
+
+on:
+  workflow_call:
+    inputs:
+      scan_all_branches:
+        description: 'Scan all branches instead of just the current one'
+        required: false
+        type: boolean
+        default: true
+      skip_test:
+        description: 'Skip test if true'
+        required: false
+        type: boolean
+        default: false
+
+jobs:
+  gitleaks:
+    runs-on: ubuntu-latest
+    if: ${{ !inputs.skip_test }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          # Fetch all history for all branches and tags
+          fetch-refs: |
+            +refs/heads/*:refs/remotes/origin/*
+      
+      - name: Run Gitleaks (All Branches)
+        if: ${{ inputs.scan_all_branches }}
+        uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITLEAKS_OPTIONS: "--verbose --no-git --redact --all-branches"
+      
+      - name: Run Gitleaks (Current Branch)
+        if: ${{ !inputs.scan_all_branches }}
+        uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
